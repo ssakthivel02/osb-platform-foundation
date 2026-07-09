@@ -1,0 +1,13 @@
+# Default owners
+* @founder @chief-architect
+
+# Security-sensitive files
+SECURITY.md @security-lead
+.github/workflows/* @devops-lead @security-lead
+adrs/* @chief-architect
+
+# Documentation ownership
+docs/architecture/* @chief-architect
+docs/operations/* @devops-lead
+docs/ai/* @ai-lead
+docs/product/* @product-owner
