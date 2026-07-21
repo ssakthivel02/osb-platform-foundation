@@ -1,0 +1,113 @@
+name: three-app-production-monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 01:10 UTC = 02:10 BST in summer and 01:10 GMT in winter.
+    # The ChatGPT automation remains scheduled at 02:00 Europe/London.
+    - cron: "10 1 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: three-app-production-monitor
+  cancel-in-progress: true
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run resilient production monitor
+        id: monitor
+        continue-on-error: true
+        run: |
+          python3 monitoring/check_production.py
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Upload production report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: three-app-production-report-${{ github.run_number }}
+          path: monitoring/output/
+          retention-days: 30
+
+      - name: Read verdict
+        if: always()
+        id: verdict
+        shell: bash
+        run: |
+          verdict=$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('monitoring/output/production-report.json')
+          if not path.exists():
+              print('MONITOR_EXECUTION_FAILURE')
+          else:
+              print(json.loads(path.read_text(encoding='utf-8')).get('verdict', 'UNKNOWN'))
+          PY
+          )
+          echo "value=$verdict" >> "$GITHUB_OUTPUT"
+          echo "Monitor verdict: $verdict"
+
+      - name: Open or update confirmed production incident
+        if: always() && steps.verdict.outputs.value == 'PRODUCTION_FAILURE'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="Production monitoring incident: DivyaNexus, RamaVerse or KirthiVerse"
+          body_file="monitoring/output/production-report.md"
+          existing=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$existing" ]]; then
+            gh issue comment "$existing" --body-file "$body_file"
+          else
+            gh issue create --title "$title" --body-file "$body_file"
+          fi
+
+      - name: Close recovered production incident
+        if: always() && steps.verdict.outputs.value == 'HEALTHY'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          title="Production monitoring incident: DivyaNexus, RamaVerse or KirthiVerse"
+          existing=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [[ -n "$existing" ]]; then
+            gh issue close "$existing" --comment "All six production endpoints and all API contracts passed the independent GitHub-hosted monitor."
+          fi
+
+      - name: Record monitoring-runtime warning
+        if: always() && (steps.verdict.outputs.value == 'MONITORING_RUNTIME_FAILURE' || steps.verdict.outputs.value == 'MONITOR_EXECUTION_FAILURE')
+        shell: bash
+        run: |
+          echo "The GitHub-hosted monitoring runtime failed its control checks. Applications were not classified as down." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Set workflow outcome
+        if: always()
+        shell: bash
+        run: |
+          case "${{ steps.verdict.outputs.value }}" in
+            HEALTHY)
+              exit 0
+              ;;
+            PRODUCTION_FAILURE)
+              echo "Confirmed production failure. See report and incident issue."
+              exit 1
+              ;;
+            MONITORING_RUNTIME_FAILURE|MONITOR_EXECUTION_FAILURE)
+              echo "Monitoring runtime failure; applications remain unclassified."
+              exit 1
+              ;;
+            *)
+              echo "Unknown monitoring verdict."
+              exit 1
+              ;;
+          esac
