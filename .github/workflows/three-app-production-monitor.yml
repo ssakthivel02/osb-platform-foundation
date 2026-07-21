@@ -2,6 +2,11 @@ name: three-app-production-monitor
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "monitoring/check_production.py"
+      - ".github/workflows/three-app-production-monitor.yml"
   schedule:
     # 01:10 UTC = 02:10 BST in summer and 01:10 GMT in winter.
     # The ChatGPT automation remains scheduled at 02:00 Europe/London.
@@ -26,10 +31,13 @@ jobs:
 
       - name: Run resilient production monitor
         id: monitor
-        continue-on-error: true
+        shell: bash
         run: |
+          set +e
           python3 monitoring/check_production.py
-          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Upload production report
         if: always()
