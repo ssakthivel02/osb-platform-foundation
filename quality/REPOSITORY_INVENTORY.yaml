@@ -1,0 +1,59 @@
+version: 1.0.0
+programme: OmSaravanaBhava Learning Ecosystem
+owner: ssakthivel02
+reviewed_at: 2026-07-27
+repositories:
+  - name: osb-platform-foundation
+    tier: A
+    purpose: Architecture, governance, roadmap and quality controls
+    deployment_type: documentation
+    production_required: true
+    current_state: verified-baseline
+  - name: osb-engineering-standards
+    tier: A
+    purpose: Shared engineering standards, schemas and validation rules
+    deployment_type: validation-package
+    production_required: true
+    current_state: audit-required
+  - name: osb-platform-data
+    tier: A
+    purpose: Canonical PostgreSQL data foundation and migrations
+    deployment_type: database
+    production_required: true
+    current_state: implementation-required
+  - name: osb-infra-terraform
+    tier: A
+    purpose: Infrastructure conventions and validated Terraform modules
+    deployment_type: infrastructure-as-code
+    production_required: true
+    current_state: validation-required
+  - name: osb-shared-ui
+    tier: B
+    purpose: Shared accessible Tamil-first UI components and design tokens
+    deployment_type: package
+    production_required: true
+    current_state: implementation-required
+  - name: osb-services-auth
+    tier: A
+    purpose: Authentication, session and identity controls
+    deployment_type: service
+    production_required: true
+    current_state: implementation-required
+  - name: osb-services-api-gateway
+    tier: A
+    purpose: API routing, security, throttling and request governance
+    deployment_type: service
+    production_required: true
+    current_state: implementation-required
+  - name: osb-web
+    tier: B
+    purpose: Public web experience
+    deployment_type: web
+    production_required: true
+    current_state: verification-required
+  - name: osb-admin-portal
+    tier: B
+    purpose: Controlled editorial and administration experience
+    deployment_type: web
+    production_required: true
+    current_state: verification-required
