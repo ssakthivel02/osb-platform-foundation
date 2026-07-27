@@ -1,0 +1,39 @@
+schema_version: 1.0.0
+release:
+  repository: REQUIRED
+  version: REQUIRED
+  commit_sha: REQUIRED
+  environment: staging
+  decision: NO-GO
+  approved_by: null
+  approved_at: null
+evidence:
+  build:
+    status: pending
+    workflow_url: null
+    artifact_digest: null
+  tests:
+    unit: pending
+    integration: pending
+    end_to_end: pending
+    accessibility: pending
+    performance: pending
+  security:
+    secrets_scan: pending
+    dependency_scan: pending
+    sast: pending
+    sbom: pending
+  data_and_rights:
+    schema_validation: pending
+    privacy_review: pending
+    rights_review: pending
+  operations:
+    health_check: pending
+    readiness_check: pending
+    monitoring: pending
+    alerting: pending
+    backup_restore: pending
+    rollback_test: pending
+open_risks: []
+conditions: []
+notes: ''
