@@ -1,0 +1,93 @@
+version: 1.0.0
+status: draft-validated-baseline
+owner: ssakthivel02
+repositories:
+  - name: osb-platform-foundation
+    purpose: Architecture, governance, roadmap and portfolio controls
+    tier: foundation
+    mvp_required: true
+  - name: osb-engineering-standards
+    purpose: Schemas, vocabularies, validation rules and engineering policy
+    tier: foundation
+    mvp_required: true
+  - name: osb-infra-terraform
+    purpose: Infrastructure conventions and validated IaC modules
+    tier: platform
+    mvp_required: true
+  - name: osb-shared-ui
+    purpose: Tamil-first accessible design system and reusable UI packages
+    tier: platform
+    mvp_required: true
+  - name: osb-services-auth
+    purpose: Authentication, authorization and identity lifecycle
+    tier: service
+    mvp_required: true
+  - name: osb-services-api-gateway
+    purpose: Unified API entry point, routing, policy and rate limits
+    tier: service
+    mvp_required: true
+  - name: osb-platform-data
+    purpose: Canonical PostgreSQL-first data platform and migrations
+    tier: platform
+    mvp_required: true
+  - name: osb-services-cms
+    purpose: Canonical content authoring and editorial workflow
+    tier: service
+    mvp_required: true
+  - name: osb-services-ai-tutor
+    purpose: Grounded AI tutoring and retrieval orchestration
+    tier: service
+    mvp_required: false
+  - name: osb-services-assessment
+    purpose: Assessments, scoring and learner evidence
+    tier: service
+    mvp_required: false
+  - name: osb-services-certification
+    purpose: Internal completion credentials and verification
+    tier: service
+    mvp_required: false
+  - name: osb-services-search
+    purpose: Text, semantic and graph-aware search
+    tier: service
+    mvp_required: true
+  - name: osb-services-recommendation
+    purpose: Rights-aware recommendations and personalization
+    tier: service
+    mvp_required: false
+  - name: osb-services-notification
+    purpose: Email, push and in-app notifications
+    tier: service
+    mvp_required: false
+  - name: osb-marketplace
+    purpose: Future commerce and creator marketplace
+    tier: product
+    mvp_required: false
+  - name: osb-community
+    purpose: Moderated community and contributor features
+    tier: product
+    mvp_required: false
+  - name: osb-web
+    purpose: Public and authenticated web experience
+    tier: application
+    mvp_required: true
+  - name: osb-mobile
+    purpose: Android and iOS learning application
+    tier: application
+    mvp_required: false
+  - name: osb-admin-portal
+    purpose: Editorial, governance and operational administration
+    tier: application
+    mvp_required: true
+  - name: osb-monitoring
+    purpose: Synthetic checks, alert rules and operational probes
+    tier: operations
+    mvp_required: true
+  - name: osb-observability
+    purpose: Logs, metrics, traces, dashboards and SLO evidence
+    tier: operations
+    mvp_required: true
+naming_corrections:
+  osb-auth-service: osb-services-auth
+  osb-api-gateway: osb-services-api-gateway
+  osb-data-platform: osb-platform-data
+  osb-cms-service: osb-services-cms
